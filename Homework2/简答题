@@ -1,0 +1,50 @@
+1.游戏对象运动的本质是什么？
+  答：游戏对象运动的本质是通过游戏对象transform属性的变化来实现游戏对象位置的连续变化。
+2.请用三种方法以上方法，实现物体的抛物线运动。（如，修改Transform属性，使用向量Vector3的方法…）
+  答：
+     （1）改变游戏对象Transform属性的position
+         void Update () 
+         {
+	            this.transform.position += Vector3.right * Time.deltaTime;
+	            this.transform.position += 30 * Vector3.up * Time.deltaTime * Time.deltaTime;
+          }
+     （2）使用Translate（）函数
+          void Update () 
+          {
+               transform.Translate（Vector3.right * Time.deltaTime)；
+               transform.Translate（30 * Vector3.up * Time.deltaTime * Time.deltaTime)；
+          }
+      （3）使用MoveTowards（）函数
+           public Transform target;
+           public float speed;
+           public float speed2;
+           void Update ()
+           {
+                float step = speed * Time.deltaTime;
+                transform.position = Vector3.MoveTowards(transform.position, target.position, step);
+                if(transform.position != target.position)
+                transform.position += speed2 * Vector3.up * Time.deltaTime;
+            }
+3.写一个程序，实现一个完整的太阳系， 其他星球围绕太阳的转速必须不一样，且不在一个法平面上。
+答：代码如下：
+    using System.Collections;
+    using System.Collections.Generic;
+    using UnityEngine;
+
+
+    public class rotate : MonoBehaviour
+    {
+        public Transform origin;//设置围绕着什么转动
+        public float speed = 10; //转动的速度，可以调整
+        float ry, rz;
+        void Start()
+        {
+            ry = Random.Range(1, 360);//产生随机数，用于生成不同的轨道。
+            rz = Random.Range(1, 360);//产生随机数，用于生成不同的轨道。
+        }
+        void Update()
+        {
+            Vector3 axis = new Vector3(0, ry, rz);
+            this.transform.RotateAround(origin.position, axis, speed * Time.deltaTime);
+        }
+      }
