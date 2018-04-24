@@ -105,11 +105,11 @@ public class FirstController : MonoBehaviour, ISceneController, IUserInterface
 		InvokeRepeating ("ShootSingleDisk", 1f, 1.5f);
 	}
 
-	int diskShots = 0;
-	public int diskComps = 0;
+	int diskShot = 0;
+	public int diskComp = 0;
 	private void ShootSingleDisk ()
 	{
-		if (diskShots == 5) {
+		if (diskShot == 5) {
 			CancelInvoke ();
 		}
 		this.currentActionManager.playDisk ();
@@ -126,8 +126,8 @@ public class FirstController : MonoBehaviour, ISceneController, IUserInterface
 	{
 		FreeDisk ();
 		++round;
-		diskShots = 0;
-		diskComps = 0;
+		diskShot = 0;
+		diskComp = 0;
 		Pause ();
 
 	}
@@ -154,22 +154,21 @@ public class FirstController : MonoBehaviour, ISceneController, IUserInterface
 			// if clicked on it, Free it
 			Debug.Log ("Fire1 Pressed");
 			//			Debug.Log (Input.mousePosition);
-			Vector3 mp = Input.mousePosition;
-			Camera ca = cam.GetComponent<Camera> ();
-			Ray ray = ca.ScreenPointToRay (Input.mousePosition);
+			Vector3 mpp = Input.mousePosition;
+			Camera caa = cam.GetComponent<Camera> ();
+			Ray ray = caa.ScreenPointToRay (Input.mousePosition);
 
-			RaycastHit hit;
-			if (Physics.Raycast (ray, out hit)) {
-				//				print (hit.transform.gameObject.name);
-				if (hit.collider.gameObject.tag.Contains ("Disk") && isPaused == false) { // disk tag
+			RaycastHit hitt;
+			if (Physics.Raycast (ray, out hitt)) {
+				if (hitt.collider.gameObject.tag.Contains ("Disk") && isPaused == false) { // disk tag
 					// get score
 					this.addScoreByRound ();
 
-					hit.collider.gameObject.GetComponent<Rigidbody> ().isKinematic = false;
+					hitt.collider.gameObject.GetComponent<Rigidbody> ().isKinematic = false;
 
 					// explosion:
 					float radius = 3f;
-					Vector3 explosionPos = hit.collider.gameObject.transform.position;
+					Vector3 explosionPos = hitt.collider.gameObject.transform.position;
 					Collider[] colliders = Physics.OverlapSphere (explosionPos, radius);
 					foreach (Collider chit in colliders) {
 						Rigidbody t_rigid = chit.gameObject.GetComponent<Rigidbody> ();
@@ -178,13 +177,10 @@ public class FirstController : MonoBehaviour, ISceneController, IUserInterface
 						}
 					}
 
-					DiskData tmpDiskData = hit.collider.GetComponent<DiskData> ();
+					DiskData tmpDiskData = hitt.collider.GetComponent<DiskData> ();
 
-					// free the disk
 					currentDiskFactory.Free (tmpDiskData.indexInUsed);
-//					hit.collider.gameObject.transform.position = new Vector3 (0, 0, -20);
 
-					// free the action
 					tmpDiskData.currentSSAction.enable = false;
 					tmpDiskData.currentSSAction.destory = true;
 
@@ -200,12 +196,7 @@ public class FirstController : MonoBehaviour, ISceneController, IUserInterface
 			if (GUI.Button (new Rect (20, 50, 50, 30), "Start")) {
 				StartGame ();
 			} 
-		} else { // started
-			/**
-			 * Game Runtime GUI :
-			 * 	 Button : pause, restart
-			 *   Text : score
-			 */
+		} else { 
 			if (GUI.Button (new Rect (260, 20, 100, 30), "Restart")) {
 				Restart ();
 			}
